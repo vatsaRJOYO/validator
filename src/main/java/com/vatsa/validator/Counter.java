@@ -5,9 +5,33 @@ import java.util.List;
 import java.util.Objects;
 
 public class Counter {
-    int valid;
-    int total;
-    List<String> messages;
+    private int valid;
+    private int total;
+    private List<String> messages;
+
+    public int getValid() {
+        return valid;
+    }
+
+    public void setValid(int valid) {
+        this.valid = valid;
+    }
+
+    public int getTotal() {
+        return total;
+    }
+
+    public void setTotal(int total) {
+        this.total = total;
+    }
+
+    public List<String> getMessages() {
+        return messages;
+    }
+
+    public void setMessages(List<String> messages) {
+        this.messages = messages;
+    }
 
     public Counter() {
         this.total = 0;
@@ -34,8 +58,9 @@ public class Counter {
     }
 
     public Counter add(Counter counter) {
-        this.total += counter.total;
-        this.valid += counter.valid;
+        this.total += counter.getTotal();
+        this.valid += counter.getValid();
+        this.messages.addAll(counter.getMessages());
 
         return this;
     }
@@ -54,9 +79,7 @@ public class Counter {
     }
 
     public static Counter combine(Counter source, Counter target) {
-        target.total += source.total;
-        target.valid += source.valid;
-        target.messages.addAll(source.messages);
+        target.add(source);
         return target;
     }
 
@@ -64,16 +87,17 @@ public class Counter {
 
 
         if (ReductionPolicy.isBinary(reductionPolicy)) {
+            int valid = counter.getValid();
             if (reductionPolicy == ReductionPolicy.BINARY_AT_LEAST_ONE) {
-                counter.valid = (counter.valid > 0) ? 1 : 0;
+                valid = (counter.valid > 0) ? 1 : 0;
             } else if (reductionPolicy == ReductionPolicy.BINARY_MAJORITY) {
-                counter.valid = (counter.valid << 1 >= counter.total) ? 1 : 0;
+                valid = (counter.valid << 1 >= counter.total) ? 1 : 0;
             } else if (reductionPolicy == ReductionPolicy.BINARY_ALL) {
-                counter.valid = (counter.valid == counter.total) ? 1 : 0;
+                valid = (counter.valid == counter.total) ? 1 : 0;
             }
-            counter.total = 1;
+            counter.setValid(valid);
+            counter.setTotal(1);
         }
-
         return counter;
     }
 }

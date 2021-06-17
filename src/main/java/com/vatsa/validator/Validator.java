@@ -61,7 +61,7 @@ public class Validator {
         boolean isValid = true;
         if (field.isAnnotationPresent(Validate.class)) {
             counter = processValidationAnnotation(field, entity);
-            isValid = (counter.valid == counter.total);
+            isValid = (counter.getValid() == counter.getTotal());
         }
 
         if (isValid && field.isAnnotationPresent(HasValidations.class)) {
